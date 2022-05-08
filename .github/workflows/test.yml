@@ -9,6 +9,10 @@ on:
   pull_request:
     branches: [ main ]
 
+env:
+  JWT_SECRET: hush
+  TESTING_DATABASE_URL: postgres://sllvtzwsvcxnad:3168f9f95391c3424d3926018efac94463a5f811a9e48d84ec6792c30d43c87f@ec2-52-86-56-90.compute-1.amazonaws.com:5432/d34no0opthpndo
+
 jobs:
   build:
 
