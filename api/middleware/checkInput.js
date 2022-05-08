@@ -27,4 +27,15 @@ const checkEmailUnique = async (req, res, next) => {
     .catch(next)
 }
 
-module.exports = { checkCreateAccount, checkEmailUnique }
+const checkDecodedEmailExits = async (req, res, next) => {
+  Auth.getByEmail(req.decodedJwt.email.toLowerCase())
+    .then(data => {
+      if (data) {
+        next()
+      } else {
+        next({ status: 401, message: "please logout and back in again to do that :)" })
+      }
+    })
+}
+
+module.exports = { checkCreateAccount, checkEmailUnique, checkDecodedEmailExits }

@@ -2,7 +2,7 @@ const router = require('express').Router()
 const Auth = require('./auth-model')
 const bcrypt = require('bcryptjs')
 const buildToken = require('./token-builder')
-const { checkCreateAccount, checkEmailUnique } = require('../middleware/checkInput')
+const { checkCreateAccount, checkEmailUnique, checkDecodedEmailExits } = require('../middleware/checkInput')
 const restricted = require('../middleware/restricted')
 
 router.post('/register', checkCreateAccount, checkEmailUnique, (req, res, next) => {
@@ -51,10 +51,17 @@ router.post('/login', (req, res, next) => {
     .catch(next)
 });
 
-router.put('/update', restricted, checkEmailUnique, (req, res, next) => {
+router.put('/update', restricted, checkEmailUnique, checkDecodedEmailExits, (req, res, next) => {
   const email = req.decodedJwt.email
   Auth.update(email, req.body)
-    .then(data => res.json(data))
+    .then(user => {
+      const token = buildToken(user)
+      res.status(200).json({
+        user_id: user.user_id,
+        email: user.email,
+        token
+      })
+    })
     .catch(next)
 })
 
