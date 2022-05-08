@@ -15,8 +15,9 @@ function findBy(filter) {
 function Add(data) {
     return db('users').insert(data, ['*'])
 }
-function update(email, data) {
-    return db('users').where({ email }).update(data, ['*'])
+async function update(email, data) {
+    const [user] = await db('users').where({ email }).update(data, ['*'])
+    return user
 }
 
 module.exports = {
